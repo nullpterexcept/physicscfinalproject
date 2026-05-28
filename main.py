@@ -4,10 +4,11 @@ scene.background = color.white
 scene.autoscale = False # manually control scene.camera.pos
 fps = 60
 
-# This is probably what we are going to use for the pendulum stuffs
 box_L = 3
 box_H = 3
 wall_thickness = 0.5
+mass_box = 1
+mass_pendulum = 1
 
 myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
 
@@ -16,7 +17,7 @@ R = 0.25
 
 myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
 
-myPendulum.pos = vec(0,0.5,0.02)
+myPendulum.pos = -myPendulum.size + vec(box_L/2-2*wall_thickness,box_H-2*wall_thickness, 1)
 # Maybe implement by changing the space between the spring wraps instead of trying to texture a box to somehow do this
 class Spring:
     pass
@@ -30,6 +31,7 @@ scene.visible = True
 
 ticks = 0
 v = vec(0,0,0)
+v_box = vec(0,0,0)
 omega = 0
 g=9.81
 theta=0.1
@@ -47,10 +49,15 @@ while True:
     v += vec(a/fps,0,0)
     omega += alpha/fps
     
+    v_box += vec(-a*mass_pendulum/mass_box/fps,0,0)
+    
     displacement = v*1/fps
     ang_displacement = omega*1/fps
+    
     theta += ang_displacement
     
-    myPendulum.pos += displacement
-    myBox.pos -= displacement
+    displacement_box = v_box*1/fps
+    
+    myPendulum.pos += displacement + displacement_box
+    myBox.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=vec(0,0,0))
