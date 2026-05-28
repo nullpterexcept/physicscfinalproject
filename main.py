@@ -11,12 +11,12 @@ wall_thickness = 0.5
 
 myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
 
-L = 2
+L = 1
 R = 0.25
 
 myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
-print(myPendulum.size)
-myPendulum.pos = vec(0,0,0.02)
+
+myPendulum.pos = vec(0,0.5,0.02)
 # Maybe implement by changing the space between the spring wraps instead of trying to texture a box to somehow do this
 class Spring:
     pass
@@ -52,5 +52,5 @@ while True:
     theta += ang_displacement
     
     myPendulum.pos += displacement
-    myBox.pos += displacement
+    myBox.pos -= displacement
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=vec(0,0,0))
