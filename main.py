@@ -17,10 +17,10 @@ R = 0.25
 
 myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
 
-myPendulum.pos = -myPendulum.size + vec(box_L/2-2*wall_thickness,box_H-2*wall_thickness, 1)
-# Maybe implement by changing the space between the spring wraps instead of trying to texture a box to somehow do this
-class Spring:
-    pass
+#myPendulum.pos = vec(box_L/2-2*wall_thickness,box_H-2*wall_thickness, 1) - myPendulum.size
+myPendulum.pos = vec(0,box_H/2-wall_thickness/2,0) - myPendulum.size/2
+myPendulum.pos.z = 1
+# For spring use helix()
 
 bg = box(length=20,height=20,width=1e-3,texture="https://i.imgur.com/YknYWNh.jpeg")
 
@@ -36,7 +36,8 @@ omega = 0
 g=9.81
 theta=0.1
 
-myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=vec(0,0,0))
+myPendulum.rotate(axis=vec(0,0,1),angle=theta)
+#sphere(radius=0.1,pos=vec(0,box_H/2-wall_thickness/4,0))
 
 while True:
     rate(fps)
@@ -58,6 +59,6 @@ while True:
     
     displacement_box = v_box*1/fps
     
-    myPendulum.pos += displacement + displacement_box
+    myPendulum.pos += displacement_box
     myBox.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=vec(0,0,0))
