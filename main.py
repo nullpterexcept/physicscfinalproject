@@ -11,7 +11,7 @@ mass_box = 1
 mass_pendulum = 1
 
 myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
-myBox.pos = vec(0,2,0)
+myBox.pos = vec(0,0,0)
 L = 1
 R = 0.25
 
@@ -20,6 +20,7 @@ myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,
 #myPendulum.pos = vec(box_L/2-2*wall_thickness,box_H-2*wall_thickness, 1) - myPendulum.size
 myPendulum.pos = myBox.pos + vec(wall_thickness/2,box_H/2-wall_thickness/2,0) - myPendulum.size/2
 myPendulum.pos.z = 1
+
 # For spring use helix()
 
 bg = box(length=20,height=20,width=1e-3,texture="https://i.imgur.com/YknYWNh.jpeg")
@@ -34,7 +35,7 @@ v = vec(0,0,0)
 v_box = vec(0,0,0)
 omega = 0
 g=9.81
-theta=0.1
+theta=0.2
 
 myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
 
@@ -46,12 +47,10 @@ while True:
     a=-g*sin(theta)
     alpha=a/L
     
-    v += vec(a/fps,0,0)
     omega += alpha/fps
     
     v_box += vec(-a*mass_pendulum/mass_box/fps,0,0)
     
-    displacement = v*1/fps
     ang_displacement = omega*1/fps
     
     theta += ang_displacement
