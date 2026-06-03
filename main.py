@@ -16,78 +16,75 @@ isPaused = False
 lastPick = None
 
 def modifyL(evt):
-    global L, isPaused
+    global L, paramWidgets
     L = evt.value
-    isPaused = True
+    paramWidgets["Llabel"].text = f"L = {L}m"
+    createPendulum()
 
 def modifyR(evt):
-    global R, isPaused
+    global R, paramWidgets
     R = evt.value
-    isPaused = True
+    paramWidgets["Rlabel"].text = f"R = {R}m"
+    createPendulum()
 
-widgets = []
-paramWidgets = []
+def createPendulum():
+    global myPendulum, myBox, theta
+    if myPendulum:
+        myPendulum.visible = False
+    myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
+    myPendulum.pos = myBox.pos + vec(wall_thickness/2,box_H/2-wall_thickness/2,0) - myPendulum.size/2
+    myPendulum.pos.z = 1
+    
+    myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
+paramWidgets = {}
+resetButton = button(bind=setup,text='reset')
 
 def setup():
     global myPendulum, myBox, scene
-    global widgets, paramWidgets
-    global ticks, v, v_box, omega, theta, isPaused
-    for widget in widgets:
-        widget.delete()
-    for widget in paramWidgets:
-        widget.delete()
-    widgets = []
-    paramWidgets = []
+    global paramWidgets
+    global ticks, v, v_box, omega, theta
     
-    scene.delete()
-    scene = canvas()
-    scene.select()
-    scene.background = color.white
-    scene.autoscale = False # manually control scene.camera.pos
-
-    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
-    myBox.pos = vec(0,0,0)
-
-    myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
-
-    myPendulum.pos = myBox.pos + vec(wall_thickness/2,box_H/2-wall_thickness/2,0) - myPendulum.size/2
-    myPendulum.pos.z = 1
-
-    # For spring use helix()
-    
-    #bg = box(length=20,height=20,width=1e-3,texture="https://i.imgur.com/YknYWNh.jpeg")
-    
-    # load textures
-    scene.visible = False
-    scene.waitfor("textures")
-    scene.visible = True
-
     ticks = 0
     v = vec(0,0,0)
     v_box = vec(0,0,0)
     omega = 0
     theta=0.2
 
-    myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
+    for obj in scene.objects:
+        obj.visible = False
 
-    resetButton = button(bind=setup,text='reset')
-    widgets.append(resetButton)
+    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
+    myBox.pos = vec(0,0,0)
 
-    isPaused = False
-    scene.bind('click',onClick)
+    createPendulum()
+
+    # For spring use helix()
     
+    #bg = box(length=20,height=20,width=1e-3,texture="https://i.imgur.com/YknYWNh.jpeg")
+    
+    # load textures
+    #scene.visible = False
+    #scene.waitfor("textures")
+    #scene.visible = True
+
+    scene.bind('click',onClick)
+
 def onClick():
     global myPendulum, myBox, scene
     global paramWidgets, lastPick
     if scene.mouse.pick == myPendulum:
         if lastPick != myPendulum:
-            for widget in paramWidgets:
+            for widget in paramWidgets.values():
                 widget.delete()
-            paramWidgets = []
+            paramWidgets = {}
         Lslider = slider(bind=modifyL,min=0.5,max=2,value=L)
+        Llabel = wtext(text=f"L = {Lslider.value}m")
         Rslider = slider(bind=modifyR,min=0.1,max=0.5,value=R)
-        paramWidgets.append(Lslider)
-        paramWidgets.append(Rslider)
+        Rlabel = wtext(text=f"R = {Rslider.value}m")
+        paramWidgets["Lslider"] = Lslider
+        paramWidgets["Rslider"] = Rslider
+        paramWidgets["Llabel"] = Llabel
+        paramWidgets["Rlabel"] = Rlabel
     else:
         for widget in paramWidgets:
             widget.delete()
