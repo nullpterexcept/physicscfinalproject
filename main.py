@@ -13,6 +13,7 @@ L = 1
 R = 0.25
 g=9.81
 isPaused = False
+lastPick = None
 
 def modifyL(evt):
     global L, isPaused
@@ -25,14 +26,18 @@ def modifyR(evt):
     isPaused = True
 
 widgets = []
+paramWidgets = []
 
 def setup():
     global myPendulum, myBox, scene
-    global widgets, isPaused
-    global ticks, v, v_box, omega, theta
+    global widgets, paramWidgets
+    global ticks, v, v_box, omega, theta, isPaused
     for widget in widgets:
         widget.delete()
+    for widget in paramWidgets:
+        widget.delete()
     widgets = []
+    paramWidgets = []
     
     scene.delete()
     scene = canvas()
@@ -66,14 +71,27 @@ def setup():
     myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
 
     resetButton = button(bind=setup,text='reset')
-    Lslider = slider(bind=modifyL,min=0.5,max=2,value=L)
-    Rslider = slider(bind=modifyR,min=0.1,max=0.5,value=R)
     widgets.append(resetButton)
-    widgets.append(Lslider)
-    widgets.append(Rslider)
-    
-    isPaused = False
 
+    isPaused = False
+    scene.bind('click',onClick)
+    
+def onClick():
+    global myPendulum, myBox, scene
+    global paramWidgets, lastPick
+    if scene.mouse.pick == myPendulum:
+        if lastPick != myPendulum:
+            for widget in paramWidgets:
+                widget.delete()
+            paramWidgets = []
+        Lslider = slider(bind=modifyL,min=0.5,max=2,value=L)
+        Rslider = slider(bind=modifyR,min=0.1,max=0.5,value=R)
+        paramWidgets.append(Lslider)
+        paramWidgets.append(Rslider)
+    else:
+        for widget in paramWidgets:
+            widget.delete()
+    lastPick = scene.mouse.pick
 setup()
 while True:
     rate(fps)
