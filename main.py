@@ -8,11 +8,10 @@ box_L = 3
 box_H = 3
 wall_thickness = 0.5
 mass_box = 1
-mass_pendulum = 1
+mass_bob = 1
 L = 1
 R = 0.25
 g=9.81
-isPaused = False
 lastPick = None
 
 def modifyL(evt):
@@ -37,11 +36,12 @@ def createPendulum():
     
     myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
 paramWidgets = {}
+graphs = {}
 resetButton = button(bind=setup,text='reset')
 
 def setup():
     global myPendulum, myBox, scene
-    global paramWidgets
+    global paramWidgets, graphs
     global ticks, v, v_box, omega, theta
     
     ticks = 0
@@ -52,6 +52,8 @@ def setup():
 
     for obj in scene.objects:
         obj.visible = False
+    for g in graphs.values():
+        g.delete()
 
     myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
     myBox.pos = vec(0,0,0)
@@ -68,6 +70,18 @@ def setup():
     #scene.visible = True
 
     scene.bind('click',onClick)
+    #graphs["xVelocityBoxGraph"] = graph(title='x velocity Box', ytitle='m/s', xtitle='s', xmin=0, ymin=-20, align='left')
+    #graphs["xVelocityBoxCurve"] = gcurve()
+
+    #graphs["xVelocityPendulumGraph"] = graph(title='x velocity Pendulum' , ytitle='m/s', xtitle='t', xmin=0, ymin=-20, align='right')
+    #graphs["xVelocityPendulumCurve"] = gcurve()
+    
+    # TODO: Figure out how to better control graph pos besides alignment...
+    graphs["xVelocityCOMGraph"] = graph(title='x velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-20, align='left')
+    graphs["xVelocityCOMCurve"] = gcurve()
+    
+    graphs["yVelocityCOMGraph"] = graph(title='y velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-20, align='right')
+    graphs["yVelocityCOMCurve"] = gcurve()
 
 def onClick():
     global myPendulum, myBox, scene
@@ -90,10 +104,9 @@ def onClick():
             widget.delete()
     lastPick = scene.mouse.pick
 setup()
+
 while True:
     rate(fps)
-    if isPaused:
-        continue
     ticks+=1
     sec = ticks/fps
     
@@ -102,9 +115,19 @@ while True:
     
     omega += alpha/fps
     
-    force_pendulum_on_box = -a * mass_pendulum
+    force_pendulum_on_box = -a * mass_bob
     
     v_box += vec(force_pendulum_on_box/mass_box/fps, 0, 0)
+    #graphs["xVelocityBoxCurve"].plot(sec,v_box.x)
+    
+    v_bob = vec(-R*omega*cos(theta),R*omega*sin(theta),0)
+    #graphs["xVelocityPendulumCurve"].plot(sec, v_bob.x)
+    
+    v_com = (mass_box*v_box + mass_bob*v_bob)/(mass_box+mass_bob)
+    graphs["xVelocityCOMCurve"].plot(sec, v_com.x)
+    graphs["yVelocityCOMCurve"].plot(sec, v_com.y)
+    
+    print(v_com)
     
     ang_displacement = omega*1/fps
     theta += ang_displacement
