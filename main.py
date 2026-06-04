@@ -111,16 +111,17 @@ while True:
     sec = ticks/fps
     
     a = -g*sin(theta)
-    alpha = a/L
+    alpha = a/(L+R)
     
     omega += alpha/fps
     
-    force_pendulum_on_box = -a * mass_bob
+    force_pendulum_on_box = -mass_box * mass_bob / (mass_box + mass_bob) * a * cos(theta)
     
     v_box += vec(force_pendulum_on_box/mass_box/fps, 0, 0)
     #graphs["xVelocityBoxCurve"].plot(sec,v_box.x)
     
-    v_bob = vec(-R*omega*cos(theta),R*omega*sin(theta),0)
+    v_bob_rel = (L+R)*omega*vec(cos(theta),sin(theta),0)
+    v_bob = v_box + v_bob_rel
     #graphs["xVelocityPendulumCurve"].plot(sec, v_bob.x)
     
     v_com = (mass_box*v_box + mass_bob*v_bob)/(mass_box+mass_bob)
