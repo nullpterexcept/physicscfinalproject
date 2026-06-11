@@ -26,6 +26,11 @@ def modifyR(evt):
     paramWidgets["Rlabel"].text = f"R = {R}m"
     createPendulum()
 
+def modifyMassBob(evt):
+    global mass_bob, paramWidgets
+    mass_bob = evt.value
+    paramWidgets["MBobLabel"].text = f"mass_bob = {mass_bob}kg"
+
 def createPendulum():
     global myPendulum, myBox, theta
     if myPendulum:
@@ -36,12 +41,13 @@ def createPendulum():
     
     myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
 paramWidgets = {}
+sysParamWidgets = {}
 graphs = {}
 resetButton = button(bind=setup,text='reset')
 
 def setup():
     global myPendulum, myBox, scene
-    global paramWidgets, graphs
+    global paramWidgets, graphs, sysParamWidgets
     global ticks, v, v_box, omega, theta
     
     ticks = 0
@@ -54,6 +60,8 @@ def setup():
         obj.visible = False
     for g in graphs.values():
         g.delete()
+    for widget in sysParamWidgets.values():
+        widget.delete()
 
     myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
     myBox.pos = vec(0,0,0)
@@ -87,18 +95,21 @@ def onClick():
     global myPendulum, myBox, scene
     global paramWidgets, lastPick
     if scene.mouse.pick == myPendulum:
-        if lastPick != myPendulum:
-            for widget in paramWidgets.values():
-                widget.delete()
-            paramWidgets = {}
+        for widget in paramWidgets.values():
+            widget.delete()
+        paramWidgets = {}
         Lslider = slider(bind=modifyL,min=0.5,max=2,value=L)
         Llabel = wtext(text=f"L = {Lslider.value}m")
         Rslider = slider(bind=modifyR,min=0.1,max=0.5,value=R)
         Rlabel = wtext(text=f"R = {Rslider.value}m")
+        MBobSlider = slider(bind=modifyMassBob,min=0.5,max=10,value=mass_bob)
+        MBobLabel = wtext(text=f"mass_bob = {mass_bob}kg")
         paramWidgets["Lslider"] = Lslider
         paramWidgets["Rslider"] = Rslider
         paramWidgets["Llabel"] = Llabel
         paramWidgets["Rlabel"] = Rlabel
+        paramWidgets["MBobSlider"] = MBobSlider
+        paramWidgets["MBobLabel"] = MBobLabel
     else:
         for widget in paramWidgets.values():
             widget.delete()
