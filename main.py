@@ -100,7 +100,7 @@ def onClick():
         paramWidgets["Llabel"] = Llabel
         paramWidgets["Rlabel"] = Rlabel
     else:
-        for widget in paramWidgets:
+        for widget in paramWidgets.values():
             widget.delete()
     lastPick = scene.mouse.pick
 setup()
@@ -128,7 +128,7 @@ while True:
     graphs["xVelocityCOMCurve"].plot(sec, v_com.x)
     graphs["yVelocityCOMCurve"].plot(sec, v_com.y)
     
-    print(v_com)
+    #print(v_com)
     
     ang_displacement = omega*1/fps
     theta += ang_displacement
