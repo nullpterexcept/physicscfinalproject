@@ -1,9 +1,9 @@
 Web VPython 3.2
-# messing around to get familar with coordinate system and mechanics
+scene.title = "Click on objects to modify parameters"
 scene.background = color.white
 scene.autoscale = False # manually control scene.camera.pos
 scene.userzoom = False
-scene.range /= 2
+scene.range /= 3
 
 wheel_image = textures.granite
 fps = 60
@@ -46,6 +46,8 @@ def createPendulum():
         myPendulum.visible = False
     myPendulum = compound([sphere(radius=R,pos=vec(0,0,0)), box(length=0.1,height=L,width=0.01,color=color.black,pos=vec(0,L/2+R,0))])
     myPendulum.pos = myBox.pos + vec(wall_thickness/2,box_H/2-wall_thickness/2,0) - myPendulum.size/2
+    # Default is good for 2x zoom, adding line below for 3x zoom
+    myPendulum.pos.y -= wall_thickness/3
     myPendulum.pos.z = 1
     
     myPendulum.rotate(axis=vec(0,0,1),angle=theta,origin=myPendulum.pos+vec(0, L/2 + R, 0))
@@ -164,7 +166,7 @@ while True:
     theta += ang_displacement
     
     displacement_box = v_box*1/fps
-    ang_displacement_wheel = displacement_box.x / (box_L/12)
+    ang_displacement_wheel = -displacement_box.x / (box_L/12)
     
     myPendulum.pos += displacement_box
     myBox.pos += displacement_box
