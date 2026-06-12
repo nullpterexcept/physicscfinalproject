@@ -105,10 +105,10 @@ def setup():
     #graphs["xVelocityPendulumCurve"] = gcurve()
     
     # TODO: Figure out how to better control graph pos besides alignment...
-    graphs["xVelocityCOMGraph"] = graph(title='x velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-20, align='left')
+    graphs["xVelocityCOMGraph"] = graph(title='x velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-1, align='left')
     graphs["xVelocityCOMCurve"] = gcurve()
     
-    graphs["yVelocityCOMGraph"] = graph(title='y velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-20, align='right')
+    graphs["yVelocityCOMGraph"] = graph(title='y velocity COM' , ytitle='m/s', xtitle='t', xmin=0, ymin=-1, align='right')
     graphs["yVelocityCOMCurve"] = gcurve()
 
 def onClick():
