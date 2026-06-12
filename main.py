@@ -5,6 +5,7 @@ scene.autoscale = False # manually control scene.camera.pos
 scene.userzoom = False
 scene.range /= 2
 
+wheel_image = textures.granite
 fps = 60
 
 box_L = 3
@@ -77,8 +78,8 @@ def setup():
         widget.delete()
 
     myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
-    leftWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),texture=textures.wood)
-    rightWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),texture=textures.wood)
+    leftWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),texture=wheel_image)
+    rightWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),texture=wheel_image)
     
     myBox.pos = vec(0,0,0)
     myGround = box(length=scene.width,height=0.1,color=color.black)
@@ -91,9 +92,9 @@ def setup():
     #bg = box(length=20,height=20,width=1e-3,texture="https://i.imgur.com/YknYWNh.jpeg")
     
     # load textures
-    #scene.visible = False
-    #scene.waitfor("textures")
-    #scene.visible = True
+    scene.visible = False
+    scene.waitfor("textures")
+    scene.visible = True
 
     scene.bind('click',onClick)
     #graphs["xVelocityBoxGraph"] = graph(title='x velocity Box', ytitle='m/s', xtitle='s', xmin=0, ymin=-20, align='left')
@@ -163,12 +164,12 @@ while True:
     theta += ang_displacement
     
     displacement_box = v_box*1/fps
-    ang_displacement_wheel = displacement_box.mag * box_L/12
+    ang_displacement_wheel = displacement_box.x / (box_L/12)
     
     myPendulum.pos += displacement_box
     myBox.pos += displacement_box
     leftWheel.pos += displacement_box
     rightWheel.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=myPendulum.pos+vec(0, L/2 + R, 0))
-    leftWheel.rotate(axis=vec(0,0,1),angle=pi/fps)
-    rightWheel.rotate(axis=vec(0,0,1),angle=pi/fps)
+    leftWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
+    rightWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
