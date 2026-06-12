@@ -11,7 +11,7 @@ mass_box = 1
 mass_bob = 1
 L = 1
 R = 0.25
-g=9.81
+g = 9.81
 lastPick = None
 
 def modifyL(evt):
@@ -30,6 +30,11 @@ def modifyMassBob(evt):
     global mass_bob, paramWidgets
     mass_bob = evt.value
     paramWidgets["MBobLabel"].text = f"mass_bob = {mass_bob}kg"
+
+def modifyMassBox(evt):
+    global mass_box, paramWidgets
+    mass_box = evt.value
+    paramWidgets["MBoxLabel"].text = f"mass_box = {mass_box}kg"
 
 def createPendulum():
     global myPendulum, myBox, theta
@@ -110,6 +115,14 @@ def onClick():
         paramWidgets["Rlabel"] = Rlabel
         paramWidgets["MBobSlider"] = MBobSlider
         paramWidgets["MBobLabel"] = MBobLabel
+    elif scene.mouse.pick == myBox:
+        for widget in paramWidgets.values():
+            widget.delete()
+        paramWidgets = {}
+        MBoxSlider = slider(bind=modifyMassBox,min=0.5,max=10,value=mass_box)
+        MBoxLabel = wtext(text=f"mass_box = {mass_box}kg")
+        paramWidgets["MBoxSlider"] = MBoxSlider
+        paramWidgets["MBoxLabel"] = MBoxLabel
     else:
         for widget in paramWidgets.values():
             widget.delete()
