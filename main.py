@@ -156,7 +156,10 @@ while True:
     theta += ang_displacement
     
     displacement_box = v_box*1/fps
+    ang_displacement_wheel = displacement_box.mag * box_L/12
     
     myPendulum.pos += displacement_box
     myCart.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=myPendulum.pos+vec(0, L/2 + R, 0))
+    leftWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
+    rightWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
