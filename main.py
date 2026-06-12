@@ -72,7 +72,10 @@ def setup():
     myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)], group=myCart)
     leftWheel = sphere(radius=box_L/12,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),group=myCart)
     rightWheel = sphere(radius=box_L/12,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),group=myCart)
+    
     myCart.pos = vec(0,0,0)
+    myGround = box(length=scene.width,height=0.1,color=color.black)
+    myGround.pos.y = -box_H/2-box_L/12*2 
 
     createPendulum()
 
