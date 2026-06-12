@@ -103,26 +103,18 @@ def onClick():
         for widget in paramWidgets.values():
             widget.delete()
         paramWidgets = {}
-        Lslider = slider(bind=modifyL,min=0.5,max=2,value=L)
-        Llabel = wtext(text=f"L = {Lslider.value}m")
-        Rslider = slider(bind=modifyR,min=0.1,max=0.5,value=R)
-        Rlabel = wtext(text=f"R = {Rslider.value}m")
-        MBobSlider = slider(bind=modifyMassBob,min=0.5,max=10,value=mass_bob)
-        MBobLabel = wtext(text=f"mass_bob = {mass_bob}kg")
-        paramWidgets["Lslider"] = Lslider
-        paramWidgets["Rslider"] = Rslider
-        paramWidgets["Llabel"] = Llabel
-        paramWidgets["Rlabel"] = Rlabel
-        paramWidgets["MBobSlider"] = MBobSlider
-        paramWidgets["MBobLabel"] = MBobLabel
+        paramWidgets["Lslider"] = slider(bind=modifyL,min=0.5,max=2,value=L)
+        paramWidgets["Rslider"] = slider(bind=modifyR,min=0.1,max=0.5,value=R)
+        paramWidgets["Llabel"] = wtext(text=f"L = {L}m")
+        paramWidgets["Rlabel"] = wtext(text=f"R = {R}m")
+        paramWidgets["MBobSlider"] = slider(bind=modifyMassBob,min=0.5,max=10,value=mass_bob)
+        paramWidgets["MBobLabel"] = wtext(text=f"mass_bob = {mass_bob}kg")
     elif scene.mouse.pick == myBox:
         for widget in paramWidgets.values():
             widget.delete()
         paramWidgets = {}
-        MBoxSlider = slider(bind=modifyMassBox,min=0.5,max=10,value=mass_box)
-        MBoxLabel = wtext(text=f"mass_box = {mass_box}kg")
-        paramWidgets["MBoxSlider"] = MBoxSlider
-        paramWidgets["MBoxLabel"] = MBoxLabel
+        paramWidgets["MBoxSlider"] = slider(bind=modifyMassBox,min=0.5,max=10,value=mass_box)
+        paramWidgets["MBoxLabel"] = wtext(text=f"mass_box = {mass_box}kg")
     else:
         for widget in paramWidgets.values():
             widget.delete()
