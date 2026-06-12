@@ -51,7 +51,7 @@ graphs = {}
 resetButton = button(bind=setup,text='reset')
 
 def setup():
-    global myPendulum, myBox, scene
+    global myPendulum, myBox, myCart, leftWheel, rightWheel, scene
     global paramWidgets, graphs, sysParamWidgets
     global ticks, v, v_box, omega, theta
     
@@ -67,9 +67,12 @@ def setup():
         g.delete()
     for widget in sysParamWidgets.values():
         widget.delete()
-
-    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
-    myBox.pos = vec(0,0,0)
+    
+    myCart = group()
+    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)], group=myCart)
+    leftWheel = sphere(radius=box_L/12,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),group=myCart)
+    rightWheel = sphere(radius=box_L/12,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),group=myCart)
+    myCart.pos = vec(0,0,0)
 
     createPendulum()
 
@@ -152,5 +155,5 @@ while True:
     displacement_box = v_box*1/fps
     
     myPendulum.pos += displacement_box
-    myBox.pos += displacement_box
+    myCart.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=myPendulum.pos+vec(0, L/2 + R, 0))
