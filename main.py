@@ -1,5 +1,4 @@
 Web VPython 3.2
-scene.title = "Click on objects to modify parameters"
 scene.background = color.white
 scene.autoscale = False # manually control scene.camera.pos
 scene.userzoom = False
