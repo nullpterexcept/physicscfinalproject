@@ -2,6 +2,9 @@ Web VPython 3.2
 # messing around to get familar with coordinate system and mechanics
 scene.background = color.white
 scene.autoscale = False # manually control scene.camera.pos
+scene.userzoom = False
+scene.range /= 2
+
 fps = 60
 
 box_L = 3
@@ -51,7 +54,7 @@ graphs = {}
 resetButton = button(bind=setup,text='reset')
 
 def setup():
-    global myPendulum, myBox, myCart, leftWheel, rightWheel, scene
+    global myPendulum, myBox, leftWheel, rightWheel, scene
     global paramWidgets, graphs, sysParamWidgets
     global ticks, v, v_box, omega, theta
     
@@ -63,19 +66,23 @@ def setup():
 
     for obj in scene.objects:
         obj.visible = False
+
     for g in graphs.values():
         g.delete()
+
     for widget in sysParamWidgets.values():
         widget.delete()
     
-    myCart = group()
-    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)], group=myCart)
-    leftWheel = sphere(radius=box_L/12,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),group=myCart)
-    rightWheel = sphere(radius=box_L/12,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),group=myCart)
+    for widget in paramWidgets.values():
+        widget.delete()
+
+    myBox = compound([box(length=box_L,height=box_H,width=0.01,color=color.black), box(length=box_L-wall_thickness,height=box_H-wall_thickness,width=0.01,color=color.white)])
+    leftWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(-box_L/2+box_L/12,-box_H/2-box_L/12,0),texture=textures.wood)
+    rightWheel = cylinder(radius=box_L/12,axis=vec(0,0,1),length=0.01,pos=vec(box_L/2-box_L/12,-box_H/2-box_L/12,0),texture=textures.wood)
     
-    myCart.pos = vec(0,0,0)
+    myBox.pos = vec(0,0,0)
     myGround = box(length=scene.width,height=0.1,color=color.black)
-    myGround.pos.y = -box_H/2-box_L/12*2 
+    myGround.pos.y = -box_H/2-box_L/12*2-0.1
 
     createPendulum()
 
@@ -110,8 +117,8 @@ def onClick():
             widget.delete()
         paramWidgets = {}
         paramWidgets["Lslider"] = slider(bind=modifyL,min=0.5,max=2,value=L)
-        paramWidgets["Rslider"] = slider(bind=modifyR,min=0.1,max=0.5,value=R)
         paramWidgets["Llabel"] = wtext(text=f"L = {L}m")
+        paramWidgets["Rslider"] = slider(bind=modifyR,min=0.1,max=0.5,value=R)
         paramWidgets["Rlabel"] = wtext(text=f"R = {R}m")
         paramWidgets["MBobSlider"] = slider(bind=modifyMassBob,min=0.5,max=10,value=mass_bob)
         paramWidgets["MBobLabel"] = wtext(text=f"mass_bob = {mass_bob}kg")
@@ -159,7 +166,9 @@ while True:
     ang_displacement_wheel = displacement_box.mag * box_L/12
     
     myPendulum.pos += displacement_box
-    myCart.pos += displacement_box
+    myBox.pos += displacement_box
+    leftWheel.pos += displacement_box
+    rightWheel.pos += displacement_box
     myPendulum.rotate(axis=vec(0,0,1),angle=ang_displacement,origin=myPendulum.pos+vec(0, L/2 + R, 0))
-    leftWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
-    rightWheel.rotate(axis=vec(0,0,1),angle=ang_displacement_wheel)
+    leftWheel.rotate(axis=vec(0,0,1),angle=pi/fps)
+    rightWheel.rotate(axis=vec(0,0,1),angle=pi/fps)
