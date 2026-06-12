@@ -26,6 +26,25 @@ def modifyR(evt):
     paramWidgets["Rlabel"].text = f"R = {R}m"
     createPendulum()
 
+def verifyBoxParams():
+    assert wall_thickness*2 < box_L
+    assert wall_thickness*2 < box_H
+
+def modifyBoxL(evt):
+    global box_L, paramWidgets
+    box_L = evt.value
+    paramWidgets["BoxLLabel"].text = f"L = {box_L}m"
+
+def modifyBoxH(evt):
+    global box_H, paramWidgets
+    box_H = evt.value
+    paramWidgets["BoxLLabel"].text = f"H = {box_H}m"
+
+def modifyWallThickness(evt):
+    global wall_thickness, paramWidgets
+    wall_thickness = evt.value
+    paramWidgets["BoxWallThicknessLabel"].text = f"Wall Thickness = {wall_thickness}m"
+
 def modifyMassBob(evt):
     global mass_bob, paramWidgets
     mass_bob = evt.value
@@ -119,10 +138,14 @@ def onClick():
         for widget in paramWidgets.values():
             widget.delete()
         paramWidgets = {}
-        MBoxSlider = slider(bind=modifyMassBox,min=0.5,max=10,value=mass_box)
-        MBoxLabel = wtext(text=f"mass_box = {mass_box}kg")
-        paramWidgets["MBoxSlider"] = MBoxSlider
-        paramWidgets["MBoxLabel"] = MBoxLabel
+        paramWidgets["MBoxSlider"] = slider(bind=modifyMassBox,min=0.5,max=10,value=mass_box)
+        paramWidgets["MBoxLabel"] = wtext(text=f"mass_box = {mass_box}kg")
+        paramWidgets["BoxLSlider"] = slider(bind=modifyBoxL,min=3,max=10,value=box_L)
+        paramWidgets["BoxLLabel"] = wtext(text=f"L = {box_L}m")
+        paramWidgets["BoxHSlider"] = slider(bind=modifyBoxH,min=3,max=10,value=box_L)
+        paramWidgets["BoxHLabel"] = wtext(text=f"H = {box_H}m")
+        paramWidgets["BoxWallThicknessSlider"] = slider(bind=modifyWallThickness,min=0.5,max=2,value=wall_thickness)
+        paramWidgets["BoxWallThicknessLabel"] = wtext(text=f"Wall Thickness = {wall_thickness}m")
     else:
         for widget in paramWidgets.values():
             widget.delete()
